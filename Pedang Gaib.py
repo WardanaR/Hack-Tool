@@ -8,15 +8,15 @@ def getIP():
     print (socket.gethostbyname(host))
 
 def ping_sweep():
-    net = input("IP adrees target: ")
+    net = input("IP adrees of target: ")
     net1= net.split('.')
     a = '.'
     net2 = net1[0]+a+net1[1]+a+net1[2]+a
-    st1 = int(input("Nomor awal: "))
-    en1 = int(input("Nomor akhir: "))
+    st1 = int(input("First Number: "))
+    en1 = int(input("Last Number: "))
     en1=en1+1
     t1= datetime.now()
-    print ("Ping sweep dalam proses:")
+    print ("Ping sweep in process:")
     for ip in range(st1,en1):
         alamat = net2+str(ip)
         res = subprocess.call(['ping', alamat]) 
@@ -24,21 +24,21 @@ def ping_sweep():
 
     t2= datetime.now()
     total =t2-t1
-    print ("Selesai selama: ",total)
+    print ("Finish in: ",total)
 
 def traceroute():
-    ip=input("IP address target: ")
+    ip=input("IP address of target: ")
     results=os.popen("pathping "+str(ip))	
     for i in results:print (i)
 
 def tcp_sweep():
-    net= input("IP address target: ")
+    net= input("IP address of target: ")
     net1= net.split('.')
     a = '.'
     net2 = net1[0]+a+net1[1]+a+net1[2]+a
-    st1 = int(input("Nomor IP awal: "))
-    en1 = int(input("Nomor IP akhir: "))
-    port = int(input("Nomor Port: "))
+    st1 = int(input("First IP Number: "))
+    en1 = int(input("Last IP Number: "))
+    port = int(input("Port Number: "))
     en1=en1+1
     t1= datetime.now()
     def scan(addr):
@@ -51,25 +51,25 @@ def tcp_sweep():
     def run1():
         for ip in range(st1,en1):
             addr = net2+str(ip)
-            if (scan(addr)):print (addr , "hidup")
+            if (scan(addr)):print (addr , "live")
 
     run1()
     t2= datetime.now()
     total =t2-t1
-    print ("Scanning selesai dalam: " , total)
+    print ("Scanning finish in: " , total)
 
 def port_scanner():
     socket.setdefaulttimeout(0.25)
     print_lock = threading.Lock()
-    target = input('IP Target: ')
+    target = input('Target IP : ')
     t_IP = socket.gethostbyname(target)
-    print ('Mulai menscan target: ', t_IP)
+    print ('Begin to scan: ', t_IP)
 
     def portscan(port):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             con = s.connect((t_IP, port))
-            with print_lock:print(port, ' terbuka')
+            with print_lock:print(port, ' open')
             con.close()
         except:pass
 
@@ -90,7 +90,7 @@ def port_scanner():
     for worker in range(1, 700): q.put(worker)
 
     q.join()
-    print('Waktu yang digunakan:', time.time() - startTime)
+    print('Using time:', time.time() - startTime)
 
 def banner_grabber():
     jawab = 'y'
@@ -104,16 +104,16 @@ def banner_grabber():
             try:
                 banner = s.recv(4096)
                 print (banner.decode('ascii'))
-            except:print ("Gagal, tidak ada banner")
+            except:print ("Failed, no banner")
             finally:s.close()
         else:
-            print ("Port " + port + " tidak hidup")
+            print ("Port " + port + " is dead")
             s.close()
-        jawab = input("Ulang lagi tidak (y/n)? ")
+        jawab = input("Repeat or not (y/n)? ")
         if jawab != 'y': break
 
 def get_hyperlink():
-    url = input("Masukkan URL : ") 
+    url = input("Put the URL : ") 
     page= urllib.request.urlopen(url)
     soup_object = BeautifulSoup(page.read())
     print (soup_object.title)
@@ -128,50 +128,50 @@ def wmi_attack():
         c = wmi.WMI(ip,user=r+username,password=passwd)
         for os in c.Win32_OperatingSystem():print (os.Caption) 
 
-        isJalan1=input("Lihat Daftar fixed drive target?(y/n)")
+        isJalan1=input("See list of fixed drive target?(y/n)")
         if isJalan1=="y":
-            print ("--------Daftar Fixed Drive---------")
+            print ("--------Fixed Drive---------")
             for disk in c.Win32_LogicalDisk(DriveType=3):print (disk)
 
-        isJalan2=input("Lihat Daftar Service Windows target?(y/n)")
+        isJalan2=input("See list of Service Windows target?(y/n)")
         if isJalan2=="y":
-            print ("--------Daftar Service Windows---------")
+            print ("--------Service Windows---------")
             for service in c.Win32_Service(State="Running"):print (service.Name)
 
-        isJalan3=input("Lihat Daftar running aplikasi Windows target?(y/n)")
+        isJalan3=input("See list of running aplikasi Windows target?(y/n)")
         if isJalan3=="y":
             for i in c.Win32_Process(["Caption", "ProcessID"]):print (i.Caption, i. ProcessID)
-            dead=input("Ada program yang ingin dimatikan?(y/n)")
+            dead=input("Do you want to kill a process?(y/n)")
             if dead=="y":
-                noid=input("id program yang akan dimatikan? ")
+                noid=input("id program to kill? ")
                 c.Win32_Process(ProcessId=noid)[0].Terminate()
 
-        isJalan4=input("Lihat Daftar & usernya sistem windows target?(y/n)")
+        isJalan4=input("See list of user from windows target?(y/n)")
         if isJalan4=="y":
             for group in c.Win32_Group():
                 print (group.Caption+":")
                 for user in group.associators(wmi_result_class="Win32_UserAccount"):print ("- " + user.Caption)
 
-        isJalan5=input("Jalankan aplikasi tertentu pada komputer target?(y/n")
+        isJalan5=input("Run an application from computer target?(y/n")
         if isJalan5=="y":
-            aplikasi=input("Nama aplikasi yang akan dijalankan")
+            aplikasi=input("Name of the application")
             SW_SHOWNORMAL = 1
             try:
                 process_startup = c.Win32_ProcessStartup.new()
                 process_startup.ShowWindow = SW_SHOWNORMAL
                 process_id, result = c.Win32_Process.Create(CommandLine=aplikasi, ProcessStartupInformation=process_startup)
                 if result == 0:print ("Process started successfully: %d" % process_id)
-                else:print ("Gagal")
+                else:print ("Failed")
             except:print ("Error")
-    except:print ("WMI Attack Gagal")
+    except:print ("Failed")
 
 def dos_timebomb():
     jawab = 'y'
     while(jawab == 'y'): 
         alamat= input("IP Address: ")
         port = input("Port: ")
-        awal=input("Jam mulai DOS? ")
-        akhir=input("jam selesai DOS? ")
+        awal=input("Time to begin the DOS? ")
+        akhir=input("Time to finish the DOS? ")
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         waktu=time.strftime("%H", time.localtime())
         if str(waktu)==str(awal):
@@ -190,21 +190,16 @@ def dos_timebomb():
 def tampilan_atas():
     print ("===================================================")
     print ("#                                                 #")
-    print ("#          PEDANG GAIB versi 1.0                  #")
+    print ("#          Magical Sword 1.0                      #")
     print ("#          ---------------------                  #")
     print ("#          created by Wardana, 11-6-2019          #")
-    print ("# info:                                           #")
-    print ("# - Dirancang untuk python versi 3.7.1 bukan 2    #")
-    print ("# - Dirancang untuk tujuan pendidikan semata      #")
-    print ("# - Segala resiko tanggung sediri!!!!             #")
-    print ("#   Gue ndak bertanggung jawab atas kerusakannya  #")
     print ("#                                                 #")
     print ("===================================================")
 
 def menu():
     print ("\n")
     print ("----------- MENU ----------")
-    print ("[1] Dapatkan IP dari nama host")
+    print ("[1] Get IP from host name")
     print ("[2] Ping Sweep IP")
     print ("[3] Traceroute IP")
     print ("[4] TCP Sweep IP")
@@ -213,9 +208,9 @@ def menu():
     print ("[7] Data hyperlink website")
     print ("[8] WMI Attack")
     print ("[9] DOS time bomb")
-    print ("[x] Keluar alias exit")
+    print ("[x] exit")
 
-    menu = input("PILIH MENU> ")
+    menu = input("Choose MENU> ")
     print ("\n")
 
     if menu == "1":getIP()
@@ -228,16 +223,16 @@ def menu():
     elif menu == "8":wmi_attack()
     elif menu == "9":dos_timebomb()
     elif menu == "x":
-        print ("Terima kasih sudah menggunakan aplikasi ini\n Sampai jumpa")
+        print ("Thanks to use this tool\n bye")
         exit()
     else:
-        print ("Salah pilih!")                       
+        print ("Wrong choose!")                       
 
 tampilan_atas()
 jawab = 'y'
 while(jawab == 'y'):
     menu()
-    jawab = input("Ulang lagi tidak (y/n)? ")
+    jawab = input("Repeat again (y/n)? ")
     if jawab != 'y': 
-        print ("Terima kasih sudah menggunakan aplikasi ini\n Sampai jumpa")
+        print ("Thanks to use this tool\n bye")
         break  
