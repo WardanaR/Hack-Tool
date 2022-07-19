@@ -1,2 +1,2 @@
 # Hack-Tool
-ping sweep, Traceroute IP, TCP Sweep IP, DOS time bomb
+ping sweep, Traceroute IP, TCP Sweep IP, DOS time bomb etc
